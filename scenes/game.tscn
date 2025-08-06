@@ -6,11 +6,16 @@
 [node name="Game" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_uwrxv")]
-position = Vector2(151, 63)
+position = Vector2(-121, -5)
+Mass = 1.0
+Acceleration = 600.0
+Friction = 30.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(166, 80)
-zoom = Vector2(4, 4)
+position = Vector2(22, 51)
 
 [node name="Platform" parent="." instance=ExtResource("2_yqjtg")]
 position = Vector2(-32, 134)
+
+[node name="Platform3" parent="." instance=ExtResource("2_yqjtg")]
+position = Vector2(-532, 84)
