@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BallType" load_steps=2 format=3 uid="uid://cpo3x5ilog04k"]
+
+[ext_resource type="Script" uid="uid://covwad8wlav0r" path="res://scripts/resources/BallType.cs" id="1_helun"]
+
+[resource]
+script = ExtResource("1_helun")
+Name = "Metal"
+Mass = 2.0
+Restitution = 0.2
+Friction = 0.5
+MaxSpeed = 300.0
+JumpForce = -400.0
+MoveForce = 300.0
+metadata/_custom_type_script = "uid://covwad8wlav0r"
