@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BallType" load_steps=2 format=3 uid="uid://ckqgbcmxo4xmy"]
+
+[ext_resource type="Script" uid="uid://covwad8wlav0r" path="res://scripts/resources/BallType.cs" id="1_4j6k2"]
+
+[resource]
+script = ExtResource("1_4j6k2")
+Name = "Default"
+Mass = 1.0
+Restitution = 0.5
+Friction = 0.3
+MaxSpeed = 700.0
+JumpForce = -600.0
+MoveForce = 600.0
+metadata/_custom_type_script = "uid://covwad8wlav0r"

@@ -1,43 +1,59 @@
 using Godot;
 using System;
+using Game.Physics;
 using System.Numerics;
 
 public partial class Player : CharacterBody2D
 {
-  [Export]
-  public float Mass { get; set; } = 1f;
-  [Export]
-  public float Acceleration { get; set; } = 800f;
-  [Export]
-  public float MaxSpeed { get; set; } = 400f;
-  [Export]
-  public float Friction { get; set; } = 20f;
-  [Export]
-  public float JumpForce { get; set; } = -500f;
-  [Export]
-  public float Gravity { get; set; } = 1200f;
+  [Export] public BallType CurrentBallType;
+  [Export] public float Gravity { get; set; } = 1200f;
 
 
-  private bool wasOnFloorLastFrame = false;
-  private Godot.Vector2 velocity = Godot.Vector2.Zero;
+  private bool _wasOnFloorLastFrame = false;
+  private float _friction;
+  private float _restitution;
+  private Godot.Vector2 _velocity = Godot.Vector2.Zero;
+  private float _maxFallVelocity = 0f;
 
+  public override void _Ready()
+  {
+    ApplyBallType(CurrentBallType);
+  }
+
+  public void ApplyBallType(BallType ballType)
+  {
+    CurrentBallType = ballType;
+
+    _friction = ballType.Friction;
+    _restitution = ballType.Restitution;
+  }
 
   public override void _PhysicsProcess(double delta)
   {
 
     float deltaTime = (float)delta;
 
-    velocity = Velocity;
-    ApplyHorizontalInput(ref velocity, deltaTime);
-    // ApplyInertia(ref velocity, deltaTime);
-    ApplyJumpForce(ref velocity);
-    ApplyGravity(ref velocity, deltaTime);
+    _velocity = Velocity;
+    ApplyHorizontalInput(ref _velocity, deltaTime);
+    ApplyJumpForce(ref _velocity);
+    ApplyGravity(ref _velocity, deltaTime);
 
-    Velocity = velocity;
+    if (!IsOnFloor())
+    {
+      if (_velocity.Y > _maxFallVelocity) _maxFallVelocity = _velocity.Y;
+    }
+
+    Velocity = _velocity;
     MoveAndSlide();
-    ApplyBounceReaction(ref velocity);
-    Velocity = velocity;
-    wasOnFloorLastFrame = IsOnFloor();
+
+    if (!_wasOnFloorLastFrame && IsOnFloor())
+    {
+      float impactVelocity = _maxFallVelocity;
+      ApplyBounceReaction(ref _velocity, impactVelocity, deltaTime);
+      Velocity = _velocity;
+      _maxFallVelocity = 0f;
+    }
+    _wasOnFloorLastFrame = IsOnFloor();
   }
 
   void ApplyHorizontalInput(ref Godot.Vector2 velocity, float deltaTime)
@@ -46,33 +62,38 @@ public partial class Player : CharacterBody2D
     if (Input.IsActionPressed("right")) input += 1f;
     if (Input.IsActionPressed("left")) input -= 1f;
 
+    float acceleration = input * CurrentBallType.MoveForce / CurrentBallType.Mass;
 
     if (input != 0f)
     {
 
-      velocity.X += input * Acceleration * deltaTime;
+      velocity.X += acceleration * deltaTime;
     }
     else
     {
       float frictionDirection = -Math.Sign(velocity.X);
+      float frictionAmount = CurrentBallType.Friction * 1000f;
 
-      velocity.X += frictionDirection * Friction * deltaTime;
 
-      if (Math.Abs(velocity.X) < 2f)
+      velocity.X += frictionDirection * frictionAmount * deltaTime;
+
+
+
+      if (Math.Abs(velocity.X) < 1f)
       {
         velocity.X = 0f;
       }
     }
 
-    velocity.X = Math.Clamp(velocity.X, -MaxSpeed, MaxSpeed);
+    velocity.X = Math.Clamp(velocity.X, -CurrentBallType.MaxSpeed, CurrentBallType.MaxSpeed);
   }
 
   void ApplyJumpForce(ref Godot.Vector2 velocity)
   {
     if (IsOnFloor() && Input.IsActionPressed("up"))
     {
-      GD.Print($"Jump Impulse: {-JumpForce / Mass}");
-      velocity.Y = JumpForce / Mass;
+      GD.Print($"Jump Impulse: {-CurrentBallType.JumpForce / CurrentBallType.Mass}");
+      velocity.Y = CurrentBallType.JumpForce / CurrentBallType.Mass;
     }
   }
 
@@ -81,32 +102,27 @@ public partial class Player : CharacterBody2D
     velocity.Y += Gravity * deltaTime;
   }
 
-  void ApplyBounceReaction(ref Godot.Vector2 velocity)
+  void ApplyBounceReaction(ref Godot.Vector2 velocity, float impactVelocity, float deltaTime)
   {
 
-    if (!wasOnFloorLastFrame && IsOnFloor() && velocity.Y >= 0f)
+    if (!_wasOnFloorLastFrame && IsOnFloor() && velocity.Y >= 0f)
     {
 
-      float restitution = 0.6f / MathF.Max(Mass, 0.5f);
-      restitution = Math.Clamp(restitution, 0f, 1f);
+      float minBounceThreshold = Gravity * deltaTime * 2f;
 
-      float impactVelocity = velocity.Y;
-
-
-      float bounce = MathF.Sqrt(impactVelocity * restitution * 100f);
-
-
-      if (bounce < 10f)
+      float bounce = impactVelocity * CurrentBallType.Restitution * 0.8f;
+      bounce = MathF.Min(bounce, 800f);
+      if (bounce < minBounceThreshold)
       {
         velocity.Y = 0f;
       }
       else
       {
-        GD.Print($"Impact velocity: {impactVelocity} bounce: {bounce}");
+        GD.Print($"Impact velocity: {impactVelocity} bounce: {bounce} minimal bounce: {minBounceThreshold}");
         velocity.Y = -bounce;
       }
 
-      
+
     }
   }
 }
