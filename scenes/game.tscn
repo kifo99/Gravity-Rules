@@ -1,15 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://m3tpmopxrw4i"]
+[gd_scene load_steps=4 format=3 uid="uid://m3tpmopxrw4i"]
 
 [ext_resource type="PackedScene" uid="uid://clhbwd3pyb127" path="res://scenes/player.tscn" id="1_uwrxv"]
+[ext_resource type="Resource" uid="uid://ckqgbcmxo4xmy" path="res://resources/DefaultBall.tres" id="2_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://dy6r47qla5yjc" path="res://scenes/platform.tscn" id="2_yqjtg"]
 
 [node name="Game" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_uwrxv")]
-position = Vector2(-121, -5)
-Mass = 1.0
-Acceleration = 600.0
-Friction = 30.0
+position = Vector2(-110, -102)
+CurrentBallType = ExtResource("2_lnu2h")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(22, 51)
@@ -19,3 +18,23 @@ position = Vector2(-32, 134)
 
 [node name="Platform3" parent="." instance=ExtResource("2_yqjtg")]
 position = Vector2(-532, 84)
+
+[node name="Platform8" parent="." instance=ExtResource("2_yqjtg")]
+position = Vector2(154, 11)
+rotation = 1.5708
+
+[node name="Platform9" parent="." instance=ExtResource("2_yqjtg")]
+position = Vector2(199, 11)
+rotation = 1.5708
+
+[node name="Platform4" parent="." instance=ExtResource("2_yqjtg")]
+position = Vector2(-532, 35)
+
+[node name="Platform6" parent="." instance=ExtResource("2_yqjtg")]
+position = Vector2(-532, -13)
+
+[node name="Platform7" parent="." instance=ExtResource("2_yqjtg")]
+position = Vector2(-532, -62)
+
+[node name="Platform5" parent="." instance=ExtResource("2_yqjtg")]
+position = Vector2(406, 85)
