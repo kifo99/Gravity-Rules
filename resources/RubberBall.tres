@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BallType" load_steps=2 format=3 uid="uid://wvtuf1o8rnj5"]
+
+[ext_resource type="Script" uid="uid://covwad8wlav0r" path="res://scripts/resources/BallType.cs" id="1_3ybat"]
+
+[resource]
+script = ExtResource("1_3ybat")
+Name = "Rubber"
+Mass = 0.5
+Restitution = 0.9
+Friction = 0.2
+MaxSpeed = 500.0
+JumpForce = -550.0
+MoveForce = 600.0
+metadata/_custom_type_script = "uid://covwad8wlav0r"
