@@ -1,16 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://m3tpmopxrw4i"]
+[gd_scene load_steps=7 format=3 uid="uid://m3tpmopxrw4i"]
 
+[ext_resource type="Script" uid="uid://cy2psqj53f2xn" path="res://scripts/GravityManager.cs" id="1_iywne"]
 [ext_resource type="PackedScene" uid="uid://clhbwd3pyb127" path="res://scenes/player.tscn" id="1_uwrxv"]
-[ext_resource type="Resource" uid="uid://ckqgbcmxo4xmy" path="res://resources/DefaultBall.tres" id="2_lnu2h"]
+[ext_resource type="Resource" uid="uid://cd3sn3s5upifq" path="res://resources/default_card.tres" id="2_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://dy6r47qla5yjc" path="res://scenes/platform.tscn" id="2_yqjtg"]
-[ext_resource type="PackedScene" uid="uid://d1x4dv3ycnd58" path="res://scenes/ball_switcher.tscn" id="4_iywne"]
-[ext_resource type="Resource" uid="uid://wvtuf1o8rnj5" path="res://resources/RubberBall.tres" id="5_p57ef"]
+[ext_resource type="PackedScene" uid="uid://bcwta1skrhgkr" path="res://scenes/hevy_card.tscn" id="3_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://baicx0w653m71" path="res://scenes/screwdriver.tscn" id="6_p57ef"]
 
 [node name="Game" type="Node2D"]
+script = ExtResource("1_iywne")
 
 [node name="Player" parent="." instance=ExtResource("1_uwrxv")]
 position = Vector2(-110, -102)
-CurrentBallType = ExtResource("2_lnu2h")
+CurrentCardType = ExtResource("2_lbhrr")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(22, 51)
@@ -30,6 +32,10 @@ position = Vector2(-532, -13)
 [node name="Platform5" parent="." instance=ExtResource("2_yqjtg")]
 position = Vector2(395, 82)
 
-[node name="BallSwitcher" parent="." instance=ExtResource("4_iywne")]
-position = Vector2(98, 94)
-NewBallType = ExtResource("5_p57ef")
+[node name="HevyCard" parent="." instance=ExtResource("3_lnu2h")]
+position = Vector2(134, 104)
+
+[node name="Screwdriver" parent="." instance=ExtResource("6_p57ef")]
+position = Vector2(223, 103)
+
+[connection signal="body_entered" from="HevyCard" to="HevyCard" method="OnBodyEntered"]

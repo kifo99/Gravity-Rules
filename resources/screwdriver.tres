@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Tool" load_steps=2 format=3 uid="uid://kc5qw32osvgy"]
+
+[ext_resource type="Script" uid="uid://d3ostl8d5o5fs" path="res://scripts/resources/Tool.cs" id="1_f67de"]
+
+[resource]
+script = ExtResource("1_f67de")
+ToolName = "Srewdriver"
+Amount = 1
+metadata/_custom_type_script = "uid://d3ostl8d5o5fs"

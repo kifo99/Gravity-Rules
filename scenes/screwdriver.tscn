@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://baicx0w653m71"]
+
+[ext_resource type="Script" uid="uid://pxyyrcvg5oxu" path="res://scripts/ToolPicker.cs" id="1_m04ge"]
+[ext_resource type="Resource" uid="uid://kc5qw32osvgy" path="res://resources/screwdriver.tres" id="2_qfk8t"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_38l80"]
+radius = 15.0333
+
+[node name="Screwdriver" type="Area2D"]
+script = ExtResource("1_m04ge")
+Tool = ExtResource("2_qfk8t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(21, 15)
+shape = SubResource("CircleShape2D_38l80")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = 19.0
+offset_top = 2.0
+offset_right = 22.0
+offset_bottom = 28.0
+
+[connection signal="body_entered" from="." to="." method="OnBodyEntered"]

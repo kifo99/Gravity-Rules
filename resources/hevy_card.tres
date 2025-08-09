@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardType" load_steps=2 format=3 uid="uid://d03ix8apam7q"]
+
+[ext_resource type="Script" uid="uid://d1sxk7q05sogp" path="res://scripts/resources/CardType.cs" id="1_o62b0"]
+
+[resource]
+script = ExtResource("1_o62b0")
+Name = "Hevy Card"
+Mass = 2.0
+Restitution = 0.3
+Friction = 0.5
+MaxSpeed = 400.0
+JumpForce = -500.0
+MoveForce = 400.0
+metadata/_custom_type_script = "uid://d1sxk7q05sogp"

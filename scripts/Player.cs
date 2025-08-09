@@ -5,10 +5,13 @@ using System.Numerics;
 
 public partial class Player : CharacterBody2D
 {
-  [Export] public BallType CurrentBallType;
-  [Export] public float Gravity { get; set; } = 1200f;
+  [Export] public CardType CurrentCardType;
+  [Export] public float Gravity { get; set; } = 800f;
 
 
+
+  private PlayerInventory _inventory;
+  private GravityManager _gravityManager;
   private bool _wasOnFloorLastFrame = false;
   private float _friction;
   private float _restitution;
@@ -17,15 +20,22 @@ public partial class Player : CharacterBody2D
 
   public override void _Ready()
   {
-    ApplyBallType(CurrentBallType);
+    _gravityManager = GetTree().Root.GetNode<GravityManager>("Game");
+    _inventory = GetNode<PlayerInventory>("Inventory");
+    ApplyCardType(CurrentCardType);
   }
 
-  public void ApplyBallType(BallType ballType)
+  public void ApplyCardType(CardType cardType)
   {
-    CurrentBallType = ballType;
+    CurrentCardType = cardType;
 
-    _friction = ballType.Friction;
-    _restitution = ballType.Restitution;
+    _friction = cardType.Friction;
+    _restitution = cardType.Restitution;
+  }
+
+  public void AddToInventory(string toolName, int amount)
+  {
+    _inventory.AddTools(toolName, amount);
   }
 
   public override void _PhysicsProcess(double delta)
@@ -62,7 +72,7 @@ public partial class Player : CharacterBody2D
     if (Input.IsActionPressed("right")) input += 1f;
     if (Input.IsActionPressed("left")) input -= 1f;
 
-    float acceleration = input * CurrentBallType.MoveForce / CurrentBallType.Mass;
+    float acceleration = input * CurrentCardType.MoveForce / CurrentCardType.Mass;
 
     if (input != 0f)
     {
@@ -72,7 +82,7 @@ public partial class Player : CharacterBody2D
     else
     {
       float frictionDirection = -Math.Sign(velocity.X);
-      float frictionAmount = CurrentBallType.Friction * 1000f;
+      float frictionAmount = CurrentCardType.Friction * 1000f;
 
 
       velocity.X += frictionDirection * frictionAmount * deltaTime;
@@ -85,21 +95,24 @@ public partial class Player : CharacterBody2D
       }
     }
 
-    velocity.X = Math.Clamp(velocity.X, -CurrentBallType.MaxSpeed, CurrentBallType.MaxSpeed);
+    velocity.X = Math.Clamp(velocity.X, -CurrentCardType.MaxSpeed, CurrentCardType.MaxSpeed);
   }
 
   void ApplyJumpForce(ref Godot.Vector2 velocity)
   {
     if (IsOnFloor() && Input.IsActionPressed("up"))
     {
-      GD.Print($"Jump Impulse: {-CurrentBallType.JumpForce / CurrentBallType.Mass}");
-      velocity.Y = CurrentBallType.JumpForce / CurrentBallType.Mass;
+      GD.Print($"Jump Impulse: {-CurrentCardType.JumpForce / CurrentCardType.Mass}");
+      velocity.Y = CurrentCardType.JumpForce / CurrentCardType.Mass;
     }
   }
 
   void ApplyGravity(ref Godot.Vector2 velocity, float deltaTime)
   {
-    velocity.Y += Gravity * deltaTime;
+    if (_gravityManager != null)
+    {
+      velocity.Y += _gravityManager.GetGravity() * deltaTime;
+    }
   }
 
   void ApplyBounceReaction(ref Godot.Vector2 velocity, float impactVelocity, float deltaTime)
@@ -110,7 +123,7 @@ public partial class Player : CharacterBody2D
 
       float minBounceThreshold = Gravity * deltaTime * 2f;
 
-      float bounce = impactVelocity * CurrentBallType.Restitution * 0.8f;
+      float bounce = impactVelocity * CurrentCardType.Restitution * 0.8f;
       bounce = MathF.Min(bounce, 800f);
       if (bounce < minBounceThreshold)
       {

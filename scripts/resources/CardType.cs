@@ -5,7 +5,7 @@ namespace Game.Physics
 {
 
   [GlobalClass]
-  public partial class BallType : Resource
+  public partial class CardType : Resource
   {
     [Export] public string Name { get; set; } = "Default";
     [Export] public float Mass { get; set; } = 1f;
