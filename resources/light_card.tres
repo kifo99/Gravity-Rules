@@ -6,9 +6,9 @@
 script = ExtResource("1_n3dxv")
 Name = "Light Card"
 Mass = 0.5
-Restitution = 0.9
+Restitution = 0.7
 Friction = 0.2
-MaxSpeed = 600.0
-JumpForce = -600.0
-MoveForce = 600.0
+MaxSpeed = 150.0
+JumpForce = -200.0
+MoveForce = 100.0
 metadata/_custom_type_script = "uid://d1sxk7q05sogp"
