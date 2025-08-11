@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://cufookbv5o2q8"]
+
+[ext_resource type="Script" uid="uid://pxyyrcvg5oxu" path="res://scripts/ToolPicker.cs" id="1_01xny"]
+[ext_resource type="Texture2D" uid="uid://pegvv6rspnaf" path="res://assets/items/Hammer.png" id="1_s5ltg"]
+[ext_resource type="Resource" uid="uid://cv57ekqoofytd" path="res://resources/hammer.tres" id="2_7cboi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_puv5m"]
+radius = 13.0
+
+[node name="Hammer" type="Area2D"]
+script = ExtResource("1_01xny")
+Tool = ExtResource("2_7cboi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_puv5m")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_s5ltg")

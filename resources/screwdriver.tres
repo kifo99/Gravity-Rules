@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_f67de")
-ToolName = "Srewdriver"
+ToolName = "Screwdriver"
 Amount = 1
 metadata/_custom_type_script = "uid://d3ostl8d5o5fs"

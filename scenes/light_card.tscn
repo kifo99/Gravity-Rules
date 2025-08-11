@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://csedbowpwslo0"]
+
+[ext_resource type="Script" uid="uid://be15du6odho1c" path="res://scripts/CardSwitcher.cs" id="1_eelrb"]
+[ext_resource type="Resource" uid="uid://yn0o1mdynh22" path="res://resources/light_card.tres" id="2_5xe8k"]
+[ext_resource type="Texture2D" uid="uid://djlmo1gd4ktrk" path="res://assets/items/LightCard.png" id="2_rxeb4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5xe8k"]
+
+[node name="LightCard" type="Area2D"]
+script = ExtResource("1_eelrb")
+NewCardType = ExtResource("2_5xe8k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_5xe8k")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_rxeb4")

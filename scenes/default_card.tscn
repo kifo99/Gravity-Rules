@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://bkbk66omx00dd"]
+
+[ext_resource type="Script" uid="uid://be15du6odho1c" path="res://scripts/CardSwitcher.cs" id="1_eab1j"]
+[ext_resource type="Texture2D" uid="uid://c11880qqdaho8" path="res://assets/items/DefaultCard.png" id="2_85dw7"]
+[ext_resource type="Resource" uid="uid://cd3sn3s5upifq" path="res://resources/default_card.tres" id="2_mbxcl"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mbxcl"]
+
+[node name="DefaultCard" type="Area2D"]
+script = ExtResource("1_eab1j")
+NewCardType = ExtResource("2_mbxcl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_mbxcl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_85dw7")

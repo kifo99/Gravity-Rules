@@ -18,6 +18,7 @@ public partial class CardSwitcher : Area2D
         {
             player.ApplyCardType(NewCardType);
             GD.Print("Card type switched to: " + NewCardType.Name);
+            QueueFree();
         }
     }
 }

@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://bj6yo8p4l8hyh"]
+
+[ext_resource type="Script" uid="uid://pxyyrcvg5oxu" path="res://scripts/ToolPicker.cs" id="1_ab2pt"]
+[ext_resource type="Resource" uid="uid://1mxh4ug0m123" path="res://resources/wrench.tres" id="2_6dcrx"]
+[ext_resource type="Texture2D" uid="uid://b3exhicf1llp3" path="res://assets/items/Wrench-Tool.png" id="2_hvxis"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2a3ox"]
+
+[node name="Wrench" type="Area2D"]
+script = ExtResource("1_ab2pt")
+Tool = ExtResource("2_6dcrx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_2a3ox")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_hvxis")

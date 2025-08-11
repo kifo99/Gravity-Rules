@@ -11,7 +11,7 @@ public partial class Detect : Area2D
         _player = GetParent<Player>();
     }
 
-    private async void OnBOdyEntered(Node2D body)
+    private void OnBOdyEntered(Node2D body)
     {
         GD.Print($"Called and detected: {body.Name}");
         if (body.Name == "BreakableGround")

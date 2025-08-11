@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsg5fdw1ccmia"]
+
+[ext_resource type="Script" uid="uid://ci1irqu3kaamc" path="res://scripts/Finish.cs" id="1_5nbog"]
+
+[node name="Finish" type="Area2D"]
+script = ExtResource("1_5nbog")
+RequiredTools = PackedStringArray("Hammer", "Wrench", "Screwdriver")

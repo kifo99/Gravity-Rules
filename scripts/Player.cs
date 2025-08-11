@@ -6,10 +6,12 @@ public partial class Player : CharacterBody2D
 {
     [Export]
     public CardType CurrentCardType;
+    public int PlayerScore;
 
     private PlayerInventory _inventory;
     private GravityManager _gravityManager;
     private AnimatedSprite2D _animatedSprite2D;
+    private AudioStreamPlayer2D _audioPlayer;
     private bool _wasOnFloorLastFrame = false;
     private float _friction;
     private float _restitution;
@@ -30,12 +32,84 @@ public partial class Player : CharacterBody2D
         }
     }
 
+    private int CalculateCollectedTools(string[] tools)
+    {
+        int collectedTools = 0;
+
+        foreach (string tool in tools)
+        {
+            if (_inventory.HasTools(tool))
+            {
+                collectedTools++;
+            }
+        }
+
+        return collectedTools;
+    }
+
     public override void _Ready()
     {
         _animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         _gravityManager = GetTree().Root.GetNode<GravityManager>("Game");
         _inventory = GetNode<PlayerInventory>("Inventory");
+        _audioPlayer = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
         ApplyCardType(CurrentCardType);
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (_isDying)
+        {
+            Velocity = _velocity;
+            MoveAndSlide();
+            return;
+        }
+
+        float deltaTime = (float)delta;
+
+        _velocity = Velocity;
+        ApplyExitGame();
+        ApplyHorizontalInput(ref _velocity, deltaTime);
+        ApplyJumpForce(ref _velocity);
+        ApplyGravity(ref _velocity, deltaTime);
+
+        if (Math.Abs(_velocity.X) > 0.1f)
+        {
+            _animatedSprite2D.FlipH = _velocity.X < 0;
+            _animatedSprite2D.Play("run");
+        }
+        else
+        {
+            _animatedSprite2D.Play("idle");
+        }
+
+        if (!IsOnFloor())
+        {
+            if (_velocity.Y > 0)
+                _animatedSprite2D.Play("fall");
+            else
+                _animatedSprite2D.Play("jump");
+
+            if (_velocity.Y > _maxFallVelocity)
+                _maxFallVelocity = _velocity.Y;
+        }
+
+        Velocity = _velocity;
+        MoveAndSlide();
+
+        if (!_wasOnFloorLastFrame && IsOnFloor())
+        {
+            float impactVelocity = _maxFallVelocity;
+            ApplyBounceReaction(ref _velocity, impactVelocity, deltaTime);
+            Velocity = _velocity;
+            _maxFallVelocity = 0f;
+        }
+        _wasOnFloorLastFrame = IsOnFloor();
+    }
+
+    public void ShowGameEndUI()
+    {
+        GetTree().ChangeSceneToFile("res://scenes/game_end.tscn");
     }
 
     public void Die()
@@ -88,54 +162,39 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    public override void _PhysicsProcess(double delta)
+    public void EvaluateCollectedTools(string[] tools)
     {
-        if (_isDying)
+        int score = CalculateCollectedTools(tools);
+
+        switch (score)
         {
-            Velocity = _velocity;
-            MoveAndSlide();
-            return;
+            case 3:
+                GD.Print("Congratulations you collected all tools your score is 100");
+                PlayerScore = 100;
+                break;
+            case 2:
+                GD.Print("Nice you collected 2 tools your score is 70");
+                PlayerScore = 70;
+                break;
+            case 1:
+                GD.Print("Good enough you collected 1 tool your score is 35");
+                PlayerScore = 35;
+                break;
+            default:
+                GD.Print("No tools collected Game failed!");
+                PlayerScore = 0;
+                break;
         }
 
-        float deltaTime = (float)delta;
+        ShowGameEndUI();
+    }
 
-        _velocity = Velocity;
-        ApplyHorizontalInput(ref _velocity, deltaTime);
-        ApplyJumpForce(ref _velocity);
-        ApplyGravity(ref _velocity, deltaTime);
-
-        if (Math.Abs(_velocity.X) > 0.1f)
+    void ApplyExitGame()
+    {
+        if (Input.IsActionJustPressed("exit"))
         {
-            _animatedSprite2D.FlipH = _velocity.X < 0;
-            _animatedSprite2D.Play("run");
+            GetTree().ChangeSceneToFile("res://scenes/exit.tscn");
         }
-        else
-        {
-            _animatedSprite2D.Play("idle");
-        }
-
-        if (!IsOnFloor())
-        {
-            if (_velocity.Y > 0)
-                _animatedSprite2D.Play("fall");
-            else
-                _animatedSprite2D.Play("jump");
-
-            if (_velocity.Y > _maxFallVelocity)
-                _maxFallVelocity = _velocity.Y;
-        }
-
-        Velocity = _velocity;
-        MoveAndSlide();
-
-        if (!_wasOnFloorLastFrame && IsOnFloor())
-        {
-            float impactVelocity = _maxFallVelocity;
-            ApplyBounceReaction(ref _velocity, impactVelocity, deltaTime);
-            Velocity = _velocity;
-            _maxFallVelocity = 0f;
-        }
-        _wasOnFloorLastFrame = IsOnFloor();
     }
 
     void ApplyHorizontalInput(ref Godot.Vector2 velocity, float deltaTime)
@@ -143,11 +202,13 @@ public partial class Player : CharacterBody2D
         if (Input.IsActionJustPressed("right"))
         {
             velocity.X += CurrentCardType.MoveForce / CurrentCardType.Mass;
+            _audioPlayer.Play();
         }
 
         if (Input.IsActionJustPressed("left"))
         {
             velocity.X -= CurrentCardType.MoveForce / CurrentCardType.Mass;
+            _audioPlayer.Play();
         }
 
         if (velocity.X != 0f)
