@@ -7,6 +7,11 @@ public partial class CardSwitcher : Area2D
     [Export]
     public CardType NewCardType;
 
+    public override void _Ready()
+    {
+        BodyEntered += OnBodyEntered;
+    }
+
     public void OnBodyEntered(Node2D body)
     {
         if (body is Player player)

@@ -67,6 +67,27 @@ public partial class Player : CharacterBody2D
         _inventory.AddTools(toolName, amount);
     }
 
+    public void TryBreakTile(Node2D body, float impactVelocity)
+    {
+        float force = CurrentCardType.Mass * Math.Abs(impactVelocity);
+
+        float breakForceThreshold = 500f;
+
+        GD.Print($"Trying to break tile with force {force}");
+
+        if (force >= breakForceThreshold)
+        {
+            GD.Print("Breaking Tile!");
+
+            if (body is TileMapLayer tileMapLayer)
+            {
+                tileMapLayer.CollisionEnabled = false;
+            }
+
+            body.QueueFree();
+        }
+    }
+
     public override void _PhysicsProcess(double delta)
     {
         if (_isDying)

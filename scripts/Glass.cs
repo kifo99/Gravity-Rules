@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public partial class Killzone : Area2D
+public partial class Glass : Area2D
 {
     public override void _Ready()
     {
@@ -12,7 +12,7 @@ public partial class Killzone : Area2D
     {
         if (body is Player player)
         {
-            player.Die();
+            GD.Print("Destroyed glass");
         }
     }
 }
